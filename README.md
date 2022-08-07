@@ -15,5 +15,9 @@
 
 использованы только стандартные библиотеки Python
 
+### Анализ алгоритма приведен в документе google docs по ссылке:
+
+https://docs.google.com/document/d/1s46Gwlb-QcCDjKAdF5MtEp5BXddSZe5w3QqRPXRvkDc/
+
 
 Автор: [__Паша Калинин__](https://github.com/Pavelkalininn)
