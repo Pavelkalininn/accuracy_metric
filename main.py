@@ -1,6 +1,8 @@
 import csv
 from typing import Tuple
 
+from sklearn.metrics import f1_score
+
 CORRECT: str = 'correct'
 OPERATOR: str = 'operator'
 RISK: str = 'reask'
@@ -57,13 +59,43 @@ def accuracy(
     return result if result != 1 else EXCEPTED_ACCURACY
 
 
+def f1(
+        array: list,
+        left_limit: int,
+        right_limit: int
+) -> float:
+    TN, FN, TP, FP = 0, 0, 0, 0
+
+    for row in array:
+        value = round(float(row[1]), 2)
+        if MIN_PERCENTAGE <= value <= left_limit and row[2] == OPERATOR:
+            TP += 1
+        elif row[2] == OPERATOR:
+            FP += 1
+        elif right_limit <= value < MAX_PERCENTAGE and row[2] == CORRECT:
+            TP += 1
+        elif row[2] == CORRECT:
+            FP += 1
+        elif left_limit < value < right_limit and row[2] == RISK:
+            TP += 1  # TN += 1 ?
+        elif row[2] == RISK:
+            FP += 1  # FN += 1 ?
+
+    precision = TP / (TP + FP)
+    recall_score = TP / (TP + FN)
+    return round(
+        2 * ((precision * recall_score) / (precision + recall_score)), 4)
+
+
 def get_decision(data: list) -> None:
     accuracies = []
     for operator_index in range(MIN_PERCENTAGE, MAX_PERCENTAGE):
         for correct_index in range(MIN_PERCENTAGE, MAX_PERCENTAGE):
-            table_accuracy = accuracy(
+            table_f1 = f1(
                 data, operator_index, correct_index)
-            accuracies.append((table_accuracy, operator_index, correct_index))
+            this_f1 = (table_f1, operator_index, correct_index)
+            print(this_f1)
+            accuracies.append(this_f1)
 
     print(
         'Best table accuracy: {}.\n'
